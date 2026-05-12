@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://suraya.ai/schema/v0.6/observation.schema.json",
+  "title": "Observation",
+  "description": "A single typed engineering observation captured into the brain at the moment it happens. v0.6, iterating.",
+  "type": "object",
+  "required": [
+    "observation_id",
+    "type",
+    "representative_summary",
+    "criticality",
+    "captured_at"
+  ],
+  "properties": {
+    "observation_id": {
+      "type": "string",
+      "description": "ULID (26-char Crockford base32). Globally unique."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "decision",
+        "failure",
+        "fix",
+        "style",
+        "deviation",
+        "correction",
+        "scope_state"
+      ],
+      "description": "The kind of observation. See suraya.ai/schema for the meaning of each."
+    },
+    "representative_summary": {
+      "type": "string",
+      "maxLength": 300,
+      "description": "One-line human-readable summary."
+    },
+    "criticality": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "description": "Operator-assigned severity at capture time."
+    },
+    "actor_handle": {
+      "type": "string",
+      "description": "GitHub handle of the operator capturing. Optional for system-emitted observations."
+    },
+    "machine_id": {
+      "type": "string",
+      "description": "Stable identifier for the machine this observation was captured from."
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Session identifier when applicable (a coherent unit of work)."
+    },
+    "project_slug": {
+      "type": "string",
+      "description": "Project this observation attributes to. Required for project-scoped retrieval."
+    },
+    "scope_id": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Optional binding to a scopes table entry (T1.7 bridge)."
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the observation was captured."
+    },
+    "validity_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional. The earliest time this observation describes (default: captured_at)."
+    },
+    "validity_end": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Optional. When this observation stops applying (e.g. a corrected decision)."
+    },
+    "tool_name": {
+      "type": "string",
+      "description": "Capture tool (e.g. 'claude-code:PostToolUse', 'manual:/capture')."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Free-form labels for retrieval / faceting."
+    },
+    "linked_observation_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Other observations this one links to. E.g. a 'fix' linking back to its 'failure'."
+    },
+    "affected_production": {
+      "type": "boolean",
+      "description": "Did this observation describe a change that hit production?"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Free-form structured payload. Recipe-defined."
+    }
+  },
+  "additionalProperties": false
+}

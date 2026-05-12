@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://suraya.ai/schema/v0.6/reinforcement-axes.schema.json",
+  "title": "ReinforcementAxes",
+  "description": "Six-axis reinforcement weighting model for memory nodes. v0.6.",
+  "type": "object",
+  "properties": {
+    "axes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "weight": { "type": "number" }
+        },
+        "required": ["name", "description", "weight"]
+      },
+      "default": [
+        { "name": "severity",      "description": "Operator-assigned criticality at capture (low/medium/high → 0/0.5/1)", "weight": 0.30 },
+        { "name": "duration",      "description": "Time window over which the pattern recurs (longer = more weight)",     "weight": 0.25 },
+        { "name": "recurrence",    "description": "Distinct observations clustering into this node",                       "weight": 0.20 },
+        { "name": "surfaces",      "description": "Distinct surfaces (machines, users, features) the pattern appears in",   "weight": 0.15 },
+        { "name": "production",    "description": "Whether the pattern affected production",                                "weight": 0.10 },
+        { "name": "operator_boost","description": "Tier-M override for high-severity-low-recurrence patterns",              "weight": 0.20 }
+      ]
+    },
+    "formula": {
+      "type": "string",
+      "const": "importance = 0.30*severity + 0.25*duration + 0.20*recurrence + 0.15*surfaces + 0.10*production + 0.20*operator_boost",
+      "description": "Authoritative formula as of v0.6. Weights sum to 1.20 because operator_boost is additive on top of the base 1.00."
+    },
+    "known_issues": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [
+        "The base 1.00 underweights high-severity-low-recurrence patterns; the 0.20 operator_boost axis exists to compensate but is manually applied. v1.0 should refactor to remove the need for manual boost."
+      ]
+    }
+  }
+}

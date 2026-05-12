@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://suraya.ai/schema/v0.6/memory-node.schema.json",
+  "title": "MemoryNode",
+  "description": "A clustered crystallization of similar observations. v0.6.",
+  "type": "object",
+  "required": [
+    "node_id",
+    "scope",
+    "type",
+    "representative_summary",
+    "status",
+    "centroid_embedding_dim",
+    "evidence_count",
+    "confidence"
+  ],
+  "properties": {
+    "node_id": { "type": "string", "format": "uuid" },
+    "scope": {
+      "type": "string",
+      "enum": ["project", "shared"],
+      "description": "Project-scoped node is visible only to its project; shared visible to anyone in the surayasphere."
+    },
+    "project_slug": {
+      "type": ["string", "null"],
+      "description": "Non-null when scope='project'."
+    },
+    "concept_node_id": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Optional link to a parent shared concept node."
+    },
+    "centroid_embedding_dim": {
+      "type": "integer",
+      "description": "Dimensionality of the centroid embedding (Voyage = 1024)."
+    },
+    "representative_summary": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": ["decision", "failure", "fix", "style", "deviation", "correction", "scope_state"]
+    },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "proposed", "standard", "historic"]
+    },
+    "evidence_count": { "type": "integer", "minimum": 0 },
+    "unique_sessions": { "type": "integer", "minimum": 0 },
+    "unique_users_in_project": { "type": "integer", "minimum": 0 },
+    "unique_features_in_project": { "type": "integer", "minimum": 0 },
+    "unique_machines_per_user": { "type": "integer", "minimum": 0 },
+    "unique_users_cross_project": { "type": "integer", "minimum": 0 },
+    "unique_projects": { "type": "integer", "minimum": 0 },
+    "unique_orgs": { "type": "integer", "minimum": 0 },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Aggregate weight ∈ [0,1]; see reinforcement-axes.schema.json for the formula."
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

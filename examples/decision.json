@@ -1,0 +1,20 @@
+{
+  "observation_id": "01JOCEIHL13NEYBHV4KYW6XAV9",
+  "type": "decision",
+  "representative_summary": "Use libsodium-wrappers (not tweetnacl) for sealed-box despite +400KB bundle, because TweetNaCl doesn't ship sealed_box natively",
+  "criticality": "high",
+  "actor_handle": "kareem",
+  "machine_id": "macbook-pro-m4-001",
+  "session_id": "01JOC7CKD3KEX9PBKJ54Z6X3W7",
+  "project_slug": "suraya-brain",
+  "scope_id": null,
+  "captured_at": "2026-05-23T19:42:18Z",
+  "tool_name": "manual:/capture",
+  "tags": ["crypto", "f6", "libsodium", "bundle-size"],
+  "linked_observation_ids": [],
+  "affected_production": false,
+  "payload": {
+    "alternatives_considered": ["tweetnacl", "noble-curves", "custom-x25519-impl"],
+    "rationale": "libsodium-wrappers is the only mainstream JS lib that exposes crypto_box_seal/seal_open natively; tweetnacl requires a custom impl which is exactly the kind of subtle crypto code we shouldn't write"
+  }
+}

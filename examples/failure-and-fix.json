@@ -1,0 +1,36 @@
+[
+  {
+    "observation_id": "01JOCFK9P3K8X7M5N4Q2R0V8W1",
+    "type": "failure",
+    "representative_summary": "CREATE INDEX CONCURRENTLY silently no-ops through Supabase's PgBouncer pooler (port 6543) in transaction mode",
+    "criticality": "high",
+    "actor_handle": "kareem",
+    "project_slug": "suraya-portal",
+    "captured_at": "2026-05-11T14:22:30Z",
+    "tool_name": "manual:/capture",
+    "tags": ["supabase", "postgres", "concurrent-index", "pooler-mode", "migration"],
+    "linked_observation_ids": [],
+    "affected_production": true,
+    "payload": {
+      "symptom": "Migration applied with no error, but the index never built",
+      "root_cause": "PgBouncer transaction-mode pooler doesn't support CONCURRENTLY (requires its own transaction)"
+    }
+  },
+  {
+    "observation_id": "01JOCFKZ9V3MNP8Q5K2W7XV0RA",
+    "type": "fix",
+    "representative_summary": "Strip CONCURRENTLY at pipe-time when applying migrations through the Supabase pooler",
+    "criticality": "high",
+    "actor_handle": "kareem",
+    "project_slug": "suraya-portal",
+    "captured_at": "2026-05-11T14:35:10Z",
+    "tool_name": "manual:/capture",
+    "tags": ["supabase", "migration", "workaround"],
+    "linked_observation_ids": ["01JOCFK9P3K8X7M5N4Q2R0V8W1"],
+    "affected_production": true,
+    "payload": {
+      "command": "cat migration.sql | sed 's/CONCURRENTLY //g' | psql \"$DB_URL\"",
+      "note": "At current row counts (<10k), the lack of CONCURRENTLY isn't user-visible. Real-scale will need a direct (5432) connection."
+    }
+  }
+]
